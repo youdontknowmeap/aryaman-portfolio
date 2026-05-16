@@ -6,8 +6,6 @@ import gsap from "gsap";
 import Image from "next/image";
 
 const CaseHero = ({ project }) => {
-  if (!project) return null;
-  console.log("CaseHero Project:", project);
   const router = useRouter();
   const heroRef = useRef(null);
   const heroImgRef = useRef(null);
@@ -30,6 +28,7 @@ const CaseHero = ({ project }) => {
   };
 
   useEffect(() => {
+    if (!project) return;
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) {
       if (glowRef.current) glowRef.current.style.opacity = "1";
@@ -78,7 +77,10 @@ const CaseHero = ({ project }) => {
     }, heroRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [project]);
+
+  if (!project) return null;
+  console.log("CaseHero Project:", project);
 
   return (
     <section

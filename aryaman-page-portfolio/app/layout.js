@@ -9,8 +9,12 @@ import { SoundContextProvider } from "@/context/SoundContext";
 import Sound from "@/components/Sound";
 
 export const metadata = {
+  metadataBase: new URL('http://localhost:3000'), // Change this to your production URL later
   title: "Aryaman Page — UI/UX Designer & Creative Director",
   description: "Portfolio of Aryaman Page — multidisciplinary designer working across UI/UX, motion, cinematography, and visual storytelling.",
+};
+
+export const viewport = {
   themeColor: "#080808",
 };
 

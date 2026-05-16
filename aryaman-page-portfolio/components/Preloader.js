@@ -16,6 +16,7 @@ const Preloader = () => {
   const timerRef = useRef([]);
 
   useEffect(() => {
+    const currentTimers = timerRef.current;
     // Check session storage
     const loaded = sessionStorage.getItem("hasLoadedPortfolio");
     if (loaded) {
@@ -30,7 +31,7 @@ const Preloader = () => {
     setStep(1);
 
     // STEP 2: Counter starts (400ms)
-    timerRef.current.push(setTimeout(() => {
+    currentTimers.push(setTimeout(() => {
       setStep(2);
       const interval = setInterval(() => {
         setCounter(prev => {
@@ -44,13 +45,13 @@ const Preloader = () => {
     }, 400));
 
     // STEP 3: Line scanning (600ms)
-    timerRef.current.push(setTimeout(() => setStep(3), 600));
+    currentTimers.push(setTimeout(() => setStep(3), 600));
 
     // SKIP Button appears (1500ms)
-    timerRef.current.push(setTimeout(() => setShowSkip(true), 1500));
+    currentTimers.push(setTimeout(() => setShowSkip(true), 1500));
 
     // STEP 4: Pulse + Typing (1800ms)
-    timerRef.current.push(setTimeout(() => {
+    currentTimers.push(setTimeout(() => {
       setStep(4);
       let charIndex = 0;
       const typeInterval = setInterval(() => {
@@ -60,16 +61,16 @@ const Preloader = () => {
         } else {
           clearInterval(typeInterval);
           // Show subtext after delay
-          timerRef.current.push(setTimeout(() => setShowSubtext(true), 200));
+          currentTimers.push(setTimeout(() => setShowSubtext(true), 200));
         }
       }, 60);
     }, 1800));
 
     // STEP 5: Flash + Fade out (2600ms)
-    timerRef.current.push(setTimeout(() => finishLoading(), 2600));
+    currentTimers.push(setTimeout(() => finishLoading(), 2600));
 
     return () => {
-      timerRef.current.forEach(clearTimeout);
+      currentTimers.forEach(clearTimeout);
     };
   }, []);
 
