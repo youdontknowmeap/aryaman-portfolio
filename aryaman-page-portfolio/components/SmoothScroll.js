@@ -10,8 +10,10 @@ export default function SmoothScroll({ children }) {
     // Skip Lenis on touch devices for better native scrolling performance
     const isTouch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
     
-    // Register GSAP ScrollTrigger
-    gsap.registerPlugin(ScrollTrigger);
+    // Register GSAP plugins (only on client)
+    if (typeof window !== "undefined") {
+      gsap.registerPlugin(ScrollTrigger);
+    }
 
     if (isTouch) return;
 

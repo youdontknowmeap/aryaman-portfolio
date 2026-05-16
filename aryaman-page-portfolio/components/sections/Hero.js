@@ -5,7 +5,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Application } from "@splinetool/runtime";
 
-gsap.registerPlugin(ScrollTrigger);
 
 const Hero = () => {
   const sectionRef = useRef(null);
@@ -24,25 +23,30 @@ const Hero = () => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) return;
 
-    // Headline Entrance Animation
-    const lines = headlineRef.current.querySelectorAll("div");
-    
-    gsap.fromTo(
-      lines,
-      {
-        opacity: 0,
-        y: 60,
-      },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.9,
-        stagger: 0.1,
-        ease: "expo.out",
-        delay: 0.2,
+    const ctx = gsap.context(() => {
+      // Headline Entrance Animation
+      const lines = headlineRef.current?.querySelectorAll("div");
+      if (lines && lines.length > 0) {
+        gsap.fromTo(
+          lines,
+          {
+            opacity: 0,
+            y: 60,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            stagger: 0.1,
+            ease: "expo.out",
+            delay: 0.2,
+          }
+        );
       }
-    );
-  }, []);
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [mounted]);
 
   // Initialize Spline Runtime
   useEffect(() => {
