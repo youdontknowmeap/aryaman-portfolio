@@ -182,7 +182,7 @@ const Hero = () => {
       />
 
       {/* 3D SCENE / FALLBACK */}
-      <div className="absolute right-0 top-0 w-full md:w-[60%] h-full z-0 pointer-events-none">
+      <div className={`absolute right-0 top-0 w-full md:w-[60%] h-full z-0 pointer-events-none transition-opacity duration-300 ${isHome ? "opacity-100" : "opacity-0"}`}>
         {/* SPLINE CANVAS */}
         {!splineError && isHome && (
           <div 

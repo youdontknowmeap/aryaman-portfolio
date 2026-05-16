@@ -1,4 +1,9 @@
-import Hero from "@/components/sections/Hero";
+import dynamic from "next/dynamic";
+
+const Hero = dynamic(() => import("@/components/sections/Hero"), { 
+  ssr: false,
+  loading: () => <div className="w-full h-screen bg-[#080808]" />
+});
 import Manifesto from "@/components/sections/Manifesto";
 import Disciplines from "@/components/sections/Disciplines";
 import Work from "@/components/sections/Work";
