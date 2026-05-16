@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Application } from "@splinetool/runtime";
+import { usePathname } from "next/navigation";
 
 
 const Hero = () => {
@@ -48,11 +49,15 @@ const Hero = () => {
     return () => ctx.revert();
   }, [mounted]);
 
-  // Initialize Spline Runtime
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  const appRef = useRef(null);
+
   useEffect(() => {
-    if (!mounted || !canvasRef.current) return;
+    if (!mounted || !canvasRef.current || !isHome) return;
 
     const app = new Application(canvasRef.current);
+    appRef.current = app;
     
     const loadSpline = async () => {
       try {
@@ -77,7 +82,7 @@ const Hero = () => {
         }
       }
     };
-  }, [mounted]);
+  }, [mounted, isHome]);
 
   // Main Hero Scroll Animation (ScrollTrigger)
   useEffect(() => {
@@ -179,7 +184,7 @@ const Hero = () => {
       {/* 3D SCENE / FALLBACK */}
       <div className="absolute right-0 top-0 w-full md:w-[60%] h-full z-0 pointer-events-none">
         {/* SPLINE CANVAS */}
-        {!splineError && (
+        {!splineError && isHome && (
           <div 
             ref={splineContainerRef}
             className="w-full h-full"
