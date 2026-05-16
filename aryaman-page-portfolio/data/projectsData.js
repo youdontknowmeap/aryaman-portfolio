@@ -9,7 +9,7 @@ export const projects = [
     duration: "6 weeks",
     coverGradient: "linear-gradient(135deg, #1a001a 0%, #3d003d 50%, #1a001a 100%)",
     accentColor: "#FF00FF",
-    coverImage: "/images/drunkin screen with bg.png",
+    coverImage: "/images/drunkin%20screen%20with%20bg.png",
     heroImage: "/images/icon.png",
     cardAspect: "landscape"
   },

@@ -96,6 +96,7 @@ const Hero = () => {
           end: "+=150%",
           scrub: 1.5,
           pin: true,
+          pinSpacing: true,
           anticipatePin: 1,
           onUpdate: (self) => {
             setHasScrolled(self.progress > 0.05);
@@ -119,11 +120,16 @@ const Hero = () => {
         rotation: 45,
         opacity: 1,
         duration: 1.5,
-        ease: "power2.inOut",
+        ease: "power2.out", // Changed from inOut for smoother finish
       }, 0);
     });
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      ScrollTrigger.getAll().forEach(st => {
+        if (st.trigger === sectionRef.current) st.kill(true);
+      });
+    };
   }, [mounted, splineLoaded]);
 
   // Animation for Spline initial fade-in

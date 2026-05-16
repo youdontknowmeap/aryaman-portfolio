@@ -79,7 +79,7 @@ export default function ProjectClient({ project, allProjects }) {
 
           <div className="w-full relative aspect-[16/9] rounded-[4px] overflow-hidden border border-[#242424]">
             <Image 
-              src="/images/drunkin screen with bg.png" 
+              src="/images/drunkin%20screen%20with%20bg.png" 
               alt="Drunkin App Screens" 
               fill 
               className="object-cover"
@@ -171,7 +171,7 @@ export default function ProjectClient({ project, allProjects }) {
           <div className="flex flex-col gap-4">
             <div className="w-full relative aspect-[16/9] rounded-[4px] overflow-hidden border border-[#242424]">
               <Image 
-                src="/images/Screenshot 2026-05-16 142548.png" 
+                src="/images/Screenshot%202026-05-16%20142548.png" 
                 alt="Clarity Core Screens 1" 
                 fill 
                 className="object-cover"
@@ -179,7 +179,7 @@ export default function ProjectClient({ project, allProjects }) {
             </div>
             <div className="w-full relative aspect-[16/9] rounded-[4px] overflow-hidden border border-[#242424]">
               <Image 
-                src="/images/Screenshot 2026-05-16 142616.png" 
+                src="/images/Screenshot%202026-05-16%20142616.png" 
                 alt="Clarity Core Screens 2" 
                 fill 
                 className="object-cover"

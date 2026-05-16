@@ -1,14 +1,25 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "@studio-freight/lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function SmoothScroll({ children }) {
+  const pathname = usePathname();
+
+  useEffect(() => {
+    // Kill all ScrollTriggers on route change to prevent DOM conflicts during unmounting
+    return () => {
+      ScrollTrigger.getAll().forEach((t) => t.kill());
+    };
+  }, [pathname]);
+
   useEffect(() => {
     // Skip Lenis on touch devices for better native scrolling performance
     const isTouch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
+...
     
     // Register GSAP plugins (only on client)
     if (typeof window !== "undefined") {

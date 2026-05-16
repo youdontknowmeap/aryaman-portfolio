@@ -41,7 +41,14 @@ const Work = () => {
       });
     }, containerRef);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      ScrollTrigger.getAll().forEach(st => {
+        if (st.vars.trigger === containerRef.current || (st.trigger && st.trigger.classList && st.trigger.classList.contains('project-card'))) {
+          st.kill(true);
+        }
+      });
+    };
   }, []);
 
   return (
