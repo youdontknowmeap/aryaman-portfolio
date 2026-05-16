@@ -19,7 +19,6 @@ export default function SmoothScroll({ children }) {
   useEffect(() => {
     // Skip Lenis on touch devices for better native scrolling performance
     const isTouch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
-...
     
     // Register GSAP plugins (only on client)
     if (typeof window !== "undefined") {

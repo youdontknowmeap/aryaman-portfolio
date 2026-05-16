@@ -124,13 +124,15 @@ const Hero = () => {
       }, 0);
     });
 
+    const section = sectionRef.current;
+
     return () => {
       ctx.revert();
       ScrollTrigger.getAll().forEach(st => {
-        if (st.trigger === sectionRef.current) st.kill(true);
+        if (st.trigger === section) st.kill(true);
       });
     };
-  }, [mounted, splineLoaded]);
+  }, [mounted, splineLoaded]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Animation for Spline initial fade-in
   useEffect(() => {
