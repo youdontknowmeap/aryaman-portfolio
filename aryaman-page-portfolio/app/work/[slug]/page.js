@@ -10,6 +10,12 @@ import CaseContent from "@/components/casestudy/CaseContent";
 import CaseNav from "@/components/casestudy/CaseNav";
 import StatRow from "@/components/casestudy/StatRow";
 
+export async function generateStaticParams() {
+  return projects.map((project) => ({
+    slug: project.slug,
+  }));
+}
+
 export default function ProjectPage({ params }) {
   const project = getProjectBySlug(params.slug);
   const transitionRef = useRef(null);
