@@ -15,16 +15,20 @@ export default function ProjectClient({ project, allProjects }) {
     if (!project) return;
 
     // Slide up transition
-    gsap.to(transitionRef.current, {
-      yPercent: -100,
-      duration: 0.6,
-      ease: "expo.out",
-      delay: 0.05,
-    });
+    if (transitionRef.current) {
+      gsap.to(transitionRef.current, {
+        yPercent: -100,
+        duration: 0.6,
+        ease: "expo.out",
+        delay: 0.05,
+      });
+    }
 
     // Reset scroll to top on mount
     window.scrollTo(0, 0);
   }, [project]);
+
+  if (!project) return null;
 
   // Helper components for modular layout
   const SectionBlock = ({ label, body, accentColor }) => (

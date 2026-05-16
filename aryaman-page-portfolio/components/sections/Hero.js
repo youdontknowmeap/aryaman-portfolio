@@ -68,7 +68,14 @@ const Hero = () => {
     loadSpline();
 
     return () => {
-      // Cleanup
+      // Properly dispose of Spline application on unmount
+      if (app) {
+        try {
+          app.dispose();
+        } catch (e) {
+          console.warn("Spline dispose error:", e);
+        }
+      }
     };
   }, [mounted]);
 

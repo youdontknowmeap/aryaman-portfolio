@@ -6,6 +6,7 @@ import gsap from "gsap";
 import Image from "next/image";
 
 const CaseHero = ({ project }) => {
+  if (!project) return null;
   console.log("CaseHero Project:", project);
   const router = useRouter();
   const heroRef = useRef(null);
@@ -118,7 +119,7 @@ const CaseHero = ({ project }) => {
       {/* BOTTOM CONTENT */}
       <div className="absolute bottom-20 left-5 md:left-10 right-5 z-20">
         <div ref={tagsRef} className="flex flex-wrap gap-2 mb-6">
-          {project.tags.map((tag, i) => (
+          {project?.tags?.map((tag, i) => (
             <span
               key={i}
               className="font-['Space_Mono'] text-[10px] text-[#707070] border border-white/15 px-[10px] py-[3px] rounded-[2px]"
