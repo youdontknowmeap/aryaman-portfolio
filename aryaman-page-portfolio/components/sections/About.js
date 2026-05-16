@@ -1,9 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const About = () => {
   const sectionRef = useRef(null);
@@ -15,7 +19,7 @@ const About = () => {
 
   const [counters, setCounters] = useState({ years: 0, products: 0, disciplines: 0 });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
     if (prefersReduced) {

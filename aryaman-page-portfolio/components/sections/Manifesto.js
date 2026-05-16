@@ -1,43 +1,43 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const Manifesto = () => {
   const sectionRef = useRef(null);
   const containerRef = useRef(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) return;
 
-    gsap.registerPlugin(ScrollTrigger);
+    const ctx = gsap.context(() => {
+      const lines = containerRef.current.querySelectorAll(".reveal-line span");
 
-    const lines = containerRef.current.querySelectorAll(".reveal-line span");
+      lines.forEach((line) => {
+        gsap.fromTo(
+          line,
+          { y: "100%" },
+          {
+            y: "0%",
+            duration: 0.8,
+            ease: "expo.out",
+            scrollTrigger: {
+              trigger: line,
+              start: "top 85%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      });
+    }, containerRef);
 
-    lines.forEach((line) => {
-      gsap.fromTo(
-        line,
-        {
-          y: "100%",
-        },
-        {
-          y: "0%",
-          duration: 0.8,
-          ease: "expo.out",
-          scrollTrigger: {
-            trigger: line,
-            start: "top 85%",
-            toggleActions: "play none none none",
-          },
-        }
-      );
-    });
-
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -110,4 +110,3 @@ const Manifesto = () => {
 };
 
 export default Manifesto;
-

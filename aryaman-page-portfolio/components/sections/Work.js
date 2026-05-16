@@ -1,18 +1,20 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Link from "next/link";
 import Image from "next/image";
 import { projects } from "@/data/projectsData";
 
-// Projects are now imported from @/data/projectsData
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const Work = () => {
   const containerRef = useRef(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) return;
 
@@ -41,16 +43,7 @@ const Work = () => {
       });
     }, containerRef);
 
-    const container = containerRef.current;
-
-    return () => {
-      ctx.revert();
-      ScrollTrigger.getAll().forEach(st => {
-        if (st.vars.trigger === container || (st.trigger && st.trigger.classList && st.trigger.classList.contains('project-card'))) {
-          st.kill(true);
-        }
-      });
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -167,4 +160,3 @@ const ProjectCard = ({ project }) => {
 
 
 export default Work;
-

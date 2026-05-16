@@ -1,11 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Application } from "@splinetool/runtime";
 import { usePathname } from "next/navigation";
 
+// Register GSAP plugin once at module level
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const Hero = () => {
   const sectionRef = useRef(null);
@@ -18,22 +22,27 @@ const Hero = () => {
   const [splineError, setSplineError] = useState(false);
   const [mounted, setMounted] = useState(false);
 
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  const appRef = useRef(null);
+
   useEffect(() => {
     setMounted(true);
-    
+  }, []);
+
+  // Headline entrance animation
+  useLayoutEffect(() => {
+    if (!mounted) return;
+
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) return;
 
     const ctx = gsap.context(() => {
-      // Headline Entrance Animation
       const lines = headlineRef.current?.querySelectorAll("div");
       if (lines && lines.length > 0) {
         gsap.fromTo(
           lines,
-          {
-            opacity: 0,
-            y: 60,
-          },
+          { opacity: 0, y: 60 },
           {
             opacity: 1,
             y: 0,
@@ -49,12 +58,9 @@ const Hero = () => {
     return () => ctx.revert();
   }, [mounted]);
 
-  const pathname = usePathname();
-  const isHome = pathname === "/";
-  const appRef = useRef(null);
-
+  // Spline 3D loading
   useEffect(() => {
-    if (!mounted || !canvasRef.current || !isHome) return;
+    if (!mounted || !canvasRef.current) return;
 
     const app = new Application(canvasRef.current);
     appRef.current = app;
@@ -73,7 +79,6 @@ const Hero = () => {
     loadSpline();
 
     return () => {
-      // Properly dispose of Spline application on unmount
       if (app) {
         try {
           app.dispose();
@@ -84,8 +89,10 @@ const Hero = () => {
     };
   }, [mounted]);
 
-  // Main Hero Scroll Animation (ScrollTrigger)
-  useEffect(() => {
+  // Main Hero Scroll Animation (ScrollTrigger with pin)
+  // CRITICAL: useLayoutEffect ensures cleanup runs BEFORE React mutates DOM
+  // This prevents the removeChild error caused by GSAP pin reparenting
+  useLayoutEffect(() => {
     if (!mounted || !splineLoaded) return;
 
     const ctx = gsap.context(() => {
@@ -115,24 +122,17 @@ const Hero = () => {
 
       // Move 3D object to center, scale up, and rotate
       tl.to(splineContainerRef.current, {
-        x: "-20vw", // Moves it towards center from its right-0 position
+        x: "-20vw",
         scale: 1.4,
         rotation: 45,
         opacity: 1,
         duration: 1.5,
-        ease: "power2.out", // Changed from inOut for smoother finish
+        ease: "power2.out",
       }, 0);
     });
 
-    const section = sectionRef.current;
-
-    return () => {
-      ctx.revert();
-      ScrollTrigger.getAll().forEach(st => {
-        if (st.trigger === section) st.kill(true);
-      });
-    };
-  }, [mounted, splineLoaded]); // eslint-disable-line react-hooks/exhaustive-deps
+    return () => ctx.revert();
+  }, [mounted, splineLoaded]);
 
   // Animation for Spline initial fade-in
   useEffect(() => {

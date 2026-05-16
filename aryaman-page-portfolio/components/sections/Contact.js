@@ -1,9 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import useMagnetic from "@/hooks/useMagnetic";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const Contact = () => {
   const sectionRef = useRef(null);
@@ -18,7 +22,7 @@ const Contact = () => {
   // Apply Magnetic to email button
   useMagnetic(emailButtonRef);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) return;
 
@@ -160,5 +164,3 @@ const SocialLink = ({ label, href }) => {
 };
 
 export default Contact;
-
-

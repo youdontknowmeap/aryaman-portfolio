@@ -1,8 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const steps = [
   {
@@ -35,7 +39,7 @@ const steps = [
 const Process = () => {
   const containerRef = useRef(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
     if (prefersReduced) {
@@ -44,45 +48,43 @@ const Process = () => {
       return;
     }
 
-    gsap.registerPlugin(ScrollTrigger);
+    const ctx = gsap.context(() => {
+      const rows = containerRef.current.querySelectorAll(".process-step-row");
 
-    const rows = containerRef.current.querySelectorAll(".process-step-row");
+      rows.forEach((row) => {
+        const bgNum = row.querySelector(".bg-number");
+        const name = row.querySelector(".step-name");
+        const desc = row.querySelector(".step-desc");
 
-    rows.forEach((row) => {
-      const bgNum = row.querySelector(".bg-number");
-      const name = row.querySelector(".step-name");
-      const desc = row.querySelector(".step-desc");
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: row,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        });
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: row,
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-      });
-
-      tl.fromTo(
-        bgNum,
-        { opacity: 0, x: 0 },
-        { opacity: 0.15, x: 40, duration: 0.6, ease: "power2.out" }
-      )
-        .fromTo(
-          name,
-          { opacity: 0, x: -30 },
-          { opacity: 1, x: 0, duration: 0.7, ease: "expo.out" },
-          "-=0.4"
+        tl.fromTo(
+          bgNum,
+          { opacity: 0, x: 0 },
+          { opacity: 0.15, x: 40, duration: 0.6, ease: "power2.out" }
         )
-        .fromTo(
-          desc,
-          { opacity: 0, y: 16 },
-          { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" },
-          "-=0.35"
-        );
-    });
+          .fromTo(
+            name,
+            { opacity: 0, x: -30 },
+            { opacity: 1, x: 0, duration: 0.7, ease: "expo.out" },
+            "-=0.4"
+          )
+          .fromTo(
+            desc,
+            { opacity: 0, y: 16 },
+            { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" },
+            "-=0.35"
+          );
+      });
+    }, containerRef);
 
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -136,4 +138,3 @@ const Process = () => {
 };
 
 export default Process;
-

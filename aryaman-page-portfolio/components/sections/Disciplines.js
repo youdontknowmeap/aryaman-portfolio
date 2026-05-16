@@ -1,8 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const disciplines = [
   {
@@ -25,39 +29,37 @@ const disciplines = [
 const Disciplines = () => {
   const containerRef = useRef(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) return;
 
-    gsap.registerPlugin(ScrollTrigger);
+    const ctx = gsap.context(() => {
+      const cards = containerRef.current.querySelectorAll(".discipline-card");
 
-    const cards = containerRef.current.querySelectorAll(".discipline-card");
-
-    cards.forEach((card, index) => {
-      const isOdd = index % 2 === 0;
-      gsap.fromTo(
-        card,
-        {
-          opacity: 0,
-          x: isOdd ? -40 : 40,
-        },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.7,
-          ease: "expo.out",
-          scrollTrigger: {
-            trigger: card,
-            start: "top 80%",
-            toggleActions: "play none none none",
+      cards.forEach((card, index) => {
+        const isOdd = index % 2 === 0;
+        gsap.fromTo(
+          card,
+          {
+            opacity: 0,
+            x: isOdd ? -40 : 40,
           },
-        }
-      );
-    });
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.7,
+            ease: "expo.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 80%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      });
+    }, containerRef);
 
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -112,4 +114,3 @@ const Disciplines = () => {
 };
 
 export default Disciplines;
-

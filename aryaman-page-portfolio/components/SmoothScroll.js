@@ -1,29 +1,29 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { usePathname } from "next/navigation";
 import Lenis from "@studio-freight/lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
 export default function SmoothScroll({ children }) {
   const pathname = usePathname();
 
-  useEffect(() => {
-    // Kill all ScrollTriggers on route change to prevent DOM conflicts during unmounting
+  // CRITICAL: useLayoutEffect cleanup runs synchronously BEFORE React mutates the DOM.
+  // This ensures all ScrollTrigger pin-spacers are removed before React tries removeChild.
+  useLayoutEffect(() => {
     return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
+      ScrollTrigger.getAll().forEach((t) => t.kill(true));
     };
   }, [pathname]);
 
   useEffect(() => {
     // Skip Lenis on touch devices for better native scrolling performance
     const isTouch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
-    
-    // Register GSAP plugins (only on client)
-    if (typeof window !== "undefined") {
-      gsap.registerPlugin(ScrollTrigger);
-    }
 
     if (isTouch) return;
 
@@ -58,7 +58,6 @@ export default function SmoothScroll({ children }) {
     return () => {
       lenis.destroy();
       gsap.ticker.remove(lenis.raf);
-      ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, []);
 
